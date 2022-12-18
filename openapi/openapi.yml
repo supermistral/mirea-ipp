@@ -1,0 +1,183 @@
+---
+openapi: 3.0.0
+info:
+  title: Product list API
+  description: API для управления списком продуктов
+  contact:
+    email: admin@mail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost
+tags:
+  - name: product
+    description: Управление списком продуктов
+paths:
+  /products:
+    get:
+      tags:
+        - product
+      summary: Получить список всех товаров
+      operationId: get_product_list
+      responses:
+        '200':
+          description: Список товаров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - product
+      summary: Создать товар
+      operationId: create_product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        '201':
+          description: Товар создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Некорректные данные
+  /products/{id}:
+    get:
+      tags:
+        - product
+      summary: Получить товар по id
+      operationId: get_product
+      parameters:
+        - name: id
+          in: path
+          description: id товара
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Товар найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Товар не найден
+    put:
+      tags:
+        - product
+      summary: Обновить товар по id
+      operationId: update_product
+      parameters:
+        - name: id
+          in: path
+          description: id товара
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Товар обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Товар не найден
+    delete:
+      tags:
+        - product
+      summary: Удалить товар по id
+      operationId: delete_product
+      parameters:
+        - name: id
+          in: path
+          description: id товара
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Товар удален
+        '404':
+          description: Товар не найден
+components:
+  schemas:
+    Product:
+      required:
+        - id
+        - text
+        - quantity
+        - created_date
+        - completed
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        text:
+          type: string
+          example: Ноутбук
+        quantity:
+          type: integer
+          example: 1
+        created_date:
+          type: string
+          format: date-time
+          example: 2022-10-10T10:00:00.001Z
+        completed:
+          type: boolean
+          example: false
+    ProductCreate:
+      required:
+        - text
+      type: object
+      properties:
+        text:
+          type: string
+          example: Ноутбук
+        quantity:
+          type: integer
+          example: 1
+        created_date:
+          type: string
+          format: date-time
+          example: 2022-10-10T10:00:00.001Z
+        completed:
+          type: boolean
+          example: false
+    ProductUpdate:
+      type: object
+      properties:
+        text:
+          type: string
+          example: Ноутбук
+        quantity:
+          type: integer
+          example: 1
+        created_date:
+          type: string
+          format: date-time
+          example: 2022-10-10T10:00:00.001Z
+        completed:
+          type: boolean
+          example: false
